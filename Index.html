@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NOVA</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ================= STATUS ================= -->
+
+
+    <div class="status-bar">
+
+        <div class="status-light"></div>
+
+        <div class="status-text">
+            <span id="status">ACTIVE</span>
+            <small id="status-detail">NOVA is ready</small>
+        </div>
+
+    </div>
+
+
+    <!-- ================= NOVA TITLE ================= -->
+
+    <div class="nova-title">
+        NOV<span>A</span>
+
+        <div class="nova-star">✦</div>
+
+        <div class="title-line"></div>
+    </div>
+
+
+    <!-- ================= NEURAL GLOBE ================= -->
+
+    <!-- ================= NEURAL GLOBE (live WebGL) ================= -->
+
+    <main class="globe-container">
+
+        <canvas id="globe-canvas" data-theme="gold"></canvas>
+
+        <!-- NOVA Core badge (kept from the original design) -->
+
+        <div class="core core-overlay">
+
+            <div class="core-glow"></div>
+
+            <span>NOVA</span>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- ================= TASK PANEL ================= -->
+
+    <aside class="task-panel">
+
+        <div class="task-header">
+            <span>WORK</span>
+
+            <div class="task-indicator"></div>
+        </div>
+
+        <div id="task-content" class="task-content">
+
+            <div class="idle">
+
+                <div class="idle-dot"></div>
+
+                <div>
+                    <strong>IDLE</strong>
+                    <small>No active tasks</small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- ================= CHATBOX ================= -->
+
+    <div class="chatbox">
+
+        <div class="chat-icon">
+            ✦
+        </div>
+
+        <input
+            id="chat-input"
+            type="text"
+            placeholder="Ask NOVA anything..."
+            autocomplete="off"
+        >
+
+        <button id="send-button">
+            ➤
+        </button>
+
+    </div>
+
+
+    <script src="globe.js"></script>
+
+    <script src="script.js"></script></body>
+
+</html>
