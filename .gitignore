@@ -1,0 +1,16 @@
+# Runtime artifacts
+logs/
+__pycache__/
+*.pyc
+*.log
+
+# Stray debug dumps in project root
+logsollama.log
+logsollama_tags.json
+logsqwen_test.json
+
+# Codebuff workspace metadata
+.freebuff/
+
+# Edge window profile
+logs/nova_window_profile/
