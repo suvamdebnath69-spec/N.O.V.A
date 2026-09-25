@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NOVA — Research Mode</title>
+
+    <link rel="stylesheet" href="research1.css">
+</head>
+
+<body>
+
+    <!-- =========================================
+         BACKGROUND
+    ========================================== -->
+
+    <div class="background-grid"></div>
+
+    <div class="scanlines"></div>
+
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+
+    <!-- =========================================
+         TOP HEADER
+    ========================================== -->
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="brand-name">
+                NOVA
+            </div>
+
+            <div class="brand-subtitle">
+                ARTIFICIAL INTELLIGENCE
+            </div>
+
+        </div>
+
+
+        <div class="research-badge">
+
+            <span class="badge-dot"></span>
+
+            RESEARCH MODE
+
+        </div>
+
+
+        <div class="system-time">
+
+            <span id="time">00:00:00</span>
+
+            <small>LOCAL SYSTEM</small>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         LEFT STATUS PANEL
+    ========================================== -->
+
+    <aside class="left-panel">
+
+        <div class="panel-label">
+            SYSTEM
+        </div>
+
+
+        <div class="status-card">
+
+            <div class="status-top">
+
+                <span class="status-dot"></span>
+
+                <div>
+                    <strong id="systemStatus">
+                        ACTIVE
+                    </strong>
+
+                    <small id="systemDescription">
+                        Research systems operational
+                    </small>
+                </div>
+
+            </div>
+
+
+            <div class="status-line"></div>
+
+
+            <div class="system-item">
+
+                <span>ENCYCLOPEDIA</span>
+
+                <strong id="srcWiki">READY</strong>
+
+            </div>
+
+
+            <div class="system-item">
+
+                <span>RELATED SCAN</span>
+
+                <strong id="srcRelated">READY</strong>
+
+            </div>
+
+
+            <div class="system-item">
+
+                <span>WEB SOURCES</span>
+
+                <strong id="srcWeb">READY</strong>
+
+            </div>
+
+
+            <div class="system-item">
+
+                <span>NEURAL ENGINE</span>
+
+                <strong>READY</strong>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROGRESS -->
+
+        <div class="power-card">
+
+            <div class="panel-label">
+                PROGRESS
+            </div>
+
+            <div class="power-value">
+                <span id="pctValue">0</span>%
+            </div>
+
+            <div class="power-bar">
+
+                <div
+                    id="pctBar"
+                    class="power-fill">
+                </div>
+
+            </div>
+
+            <small id="pctDetail">
+                AWAITING TOPIC
+            </small>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================
+         MAIN CORE
+    ========================================== -->
+
+    <main class="core-area">
+
+
+        <!-- Outer rotating rings -->
+
+        <div class="core-ring ring-a"></div>
+
+        <div class="core-ring ring-b"></div>
+
+        <div class="core-ring ring-c"></div>
+
+
+        <!-- Radar -->
+
+        <div class="radar">
+
+            <div class="radar-line"></div>
+
+        </div>
+
+
+        <!-- Live neural globe (blue theme) -->
+
+        <canvas
+            id="research-globe"
+            data-theme="blue">
+        </canvas>
+
+
+        <!-- Core information -->
+
+        <div class="core-status">
+
+            <div class="core-title">
+                RESEARCH CORE
+            </div>
+
+            <div class="core-state">
+                <span></span>
+                <span id="coreState">AWAITING TOPIC</span>
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================
+         RIGHT PANEL
+    ========================================== -->
+
+    <aside class="right-panel">
+
+        <div class="panel-label">
+            RESEARCH PIPELINE
+        </div>
+
+
+        <div class="operations-card">
+
+            <div class="operation-header">
+
+                <span>STEPS</span>
+
+                <span
+                    id="stepCount"
+                    class="task-count">
+                    0/6
+                </span>
+
+            </div>
+
+
+            <div
+                id="stepList"
+                class="step-list">
+
+                <div class="step" data-step="plan">Plan the topic</div>
+
+                <div class="step" data-step="wikipedia">Query the encyclopedia</div>
+
+                <div class="step" data-step="related">Follow related articles</div>
+
+                <div class="step" data-step="web">Gather web sources</div>
+
+                <div class="step" data-step="summary">Compose the summary</div>
+
+                <div class="step" data-step="pdf">Write the PDF</div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Sources found -->
+
+        <div class="activity-card">
+
+            <div class="operation-header">
+
+                <span>SOURCES</span>
+
+                <span
+                    id="srcCount"
+                    class="live-label">
+                    0
+                </span>
+
+            </div>
+
+
+            <div
+                id="sourceList"
+                class="activity-log">
+
+                <div>
+                    <span>--:--</span>
+                    NONE YET
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- =========================================
+         COMMAND BAR
+    ========================================== -->
+
+    <div class="command-area">
+
+        <div class="command-prefix">
+            <span>?</span>
+        </div>
+
+
+        <input
+            id="topicInput"
+            type="text"
+            placeholder="Give me a topic to research..."
+            autocomplete="off"
+        >
+
+
+        <button
+            id="micButton"
+            class="mic-button"
+            title="Speak the topic">
+            &#127908;
+        </button>
+
+
+        <div class="command-status" id="commandStatus">
+            READY
+        </div>
+
+
+        <button
+            id="startResearch"
+            class="command-button">
+
+            RESEARCH
+
+        </button>
+
+    </div>
+
+
+    <!-- =========================================
+         BOTTOM STATUS
+    ========================================== -->
+
+    <footer class="footer">
+
+        <div>
+            NOVA RESEARCH v1.0
+        </div>
+
+        <div>
+            <span class="footer-dot"></span>
+            PDF DELIVERED TO DESKTOP
+        </div>
+
+        <div>
+            <a href="/" id="standbyLink">⏻ EXIT RESEARCH (ESC)</a>
+        </div>
+
+    </footer>
+
+
+    <script src="globe.js"></script>
+
+    <script src="research2.js"></script>
+
+</body>
+
+</html>

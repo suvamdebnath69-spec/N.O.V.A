@@ -40,7 +40,7 @@ elif hasattr(sys.stdout, "isatty") and not sys.stdout.isatty() and hasattr(sys.s
     # (skip exotic buffers — e.g. test harnesses — that lack reconfigure)
     sys.stdout.reconfigure(line_buffering=True)
     sys.stderr.reconfigure(line_buffering=True)
-from actions import beast_tools, calculator, documents, files, media, registry, safe_tools, system, web
+from actions import beast_tools, calculator, documents, files, media, registry, research, safe_tools, system, web
 from core import hotkey, stt
 from core.brain import brain
 from core.fast_path import fast_path
@@ -86,24 +86,12 @@ def _schedule_reminder(text: str, params: dict) -> str:
 
 def _research_document(topic: str) -> str:
     """
-    Real research: fetch the topic's material from the web, then compose
-    it into a document (docx, falling back to txt) in logs/notes.
+    Real research: run the multi-source pipeline (Wikipedia + related + web
+    + local-brain summary) and drop a structured PDF on the desktop.
     """
     if not topic.strip():
         return "Research what, sir? Give me a topic."
-    material = web.research(topic)
-    if material.startswith(("The web page didn't", "Web extraction", "That page gave")):
-        return material
-    title = f"research_{re.sub(r'[^a-z0-9]+', '_', topic.lower()).strip('_')[:40]}"
-    body = (
-        f"Research document: {topic}\n"
-        f"Compiled by NOVA on {time.strftime('%Y-%m-%d %H:%M')}\n"
-        f"{'=' * 60}\n\n{material}\n"
-    )
-    result = documents.write_document(title, body, fmt="docx")
-    if "pip install" in result:  # python-docx missing — txt fallback
-        result = documents.write_document(title, body, fmt="txt")
-    return f"Research complete on {topic}. {result}"
+    return research.run_blocking(topic)
 
 
 def handle_command(text: str) -> dict:
@@ -221,6 +209,10 @@ def _dispatch(intent: str, text: str, params: dict) -> str:
         return web.open_website(params.get("site", ""))
     if intent == "RESEARCH":
         return _research_document(params.get("topic", ""))
+    if intent == "RESEARCH_MODE_ON":
+        return "Research Mode is open, sir — give me a topic and I'll put a PDF on your desktop."
+    if intent == "RESEARCH_OFF":
+        return "Leaving Research Mode."
     if intent == "CLICK_AT":
         if not state.beast_armed():
             return "Clicking the screen is a Beast Mode skill, sir — 'enter beast mode' first."
@@ -383,6 +375,11 @@ def beast():
     return send_from_directory(config.UI_DIR, "Beast.html")
 
 
+@app.route("/research")
+def research_page():
+    return send_from_directory(config.UI_DIR, "Research.html")
+
+
 @app.route("/<path:filename>")
 def static_files(filename):
     return send_from_directory(config.UI_DIR, filename)
@@ -392,6 +389,40 @@ def static_files(filename):
 def api_command():
     data = request.get_json(silent=True) or {}
     return jsonify(handle_command(data.get("text", "")))
+
+
+@app.route("/api/announce", methods=["POST"])
+def api_announce():
+    """Speak + log a one-off announcement (used by the Research UI)."""
+    data = request.get_json(silent=True) or {}
+    text = (data.get("text") or "").strip()
+    if text:
+        state.add_announcement(text)
+        tts.say(text)
+    return jsonify({"announced": bool(text)})
+
+
+@app.route("/api/research", methods=["POST"])
+def api_research():
+    """Start a research run; returns immediately with the live status."""
+    data = request.get_json(silent=True) or {}
+    topic = (data.get("topic") or "").strip()
+    if not topic:
+        return jsonify({"started": False, "error": "Research what, sir?"})
+    result = research.start_research(topic)
+    if result.get("started"):
+        state.set_status("thinking", "Researching...")
+        return jsonify({**result, "reply": (
+            f"The research on {result['topic']} is underway, sir — "
+            "the PDF will be on your desktop when it's done."
+        )})
+    return jsonify(result)
+
+
+@app.route("/api/research/status")
+def api_research_status():
+    """Live pipeline progress for the blue UI's polling loop."""
+    return jsonify(state.research())
 
 
 @app.route("/api/listen", methods=["POST"])
@@ -415,6 +446,7 @@ def api_state():
             "stats": state.get_stats(),
             "beast_mode": state.beast_armed(),
             "voice": state.voice_on(),
+            "research": state.research(),
         }
     )
 

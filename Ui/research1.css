@@ -1,0 +1,1292 @@
+/* =====================================================
+   NOVA RESEARCH MODE
+   DEEP NAVY + ELECTRIC BLUE
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+:root {
+
+    --navy: #020617;
+    --navy2: #060b1c;
+
+    --blue: #3b82f6;
+    --blue2: #1d4ed8;
+    --deep-blue: #0b1e4a;
+
+    --blue-glow:
+        rgba(59, 130, 246, 0.55);
+
+    --text: #e8eefc;
+    --muted: #64748b;
+
+}
+
+
+html,
+body {
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+}
+
+
+body {
+
+    background:
+        radial-gradient(
+            circle at center,
+            #06122e 0%,
+            #040a1c 30%,
+            #020617 70%
+        );
+
+    color: var(--text);
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+}
+
+
+/* =====================================================
+   BACKGROUND GRID
+===================================================== */
+
+.background-grid {
+
+    position: fixed;
+
+    inset: 0;
+
+    background-image:
+
+        linear-gradient(
+            rgba(59, 130, 246, 0.04) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(59, 130, 246, 0.04) 1px,
+            transparent 1px
+        );
+
+    background-size: 45px 45px;
+
+    pointer-events: none;
+
+}
+
+
+.scanlines {
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    background:
+        repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 3px,
+            rgba(59, 130, 246, 0.015) 4px
+        );
+
+    z-index: 50;
+
+}
+
+
+.ambient {
+
+    position: fixed;
+
+    width: 500px;
+    height: 500px;
+
+    border-radius: 50%;
+
+    filter: blur(120px);
+
+    pointer-events: none;
+
+}
+
+
+.ambient-one {
+
+    top: 20%;
+    left: 35%;
+
+    background:
+        rgba(29, 78, 216, 0.10);
+
+}
+
+
+.ambient-two {
+
+    bottom: -200px;
+    right: -100px;
+
+    background:
+        rgba(59, 130, 246, 0.07);
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    height: 85px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 0 35px;
+
+    border-bottom:
+        1px solid
+        rgba(59, 130, 246, 0.25);
+
+    background:
+        rgba(2, 6, 23, 0.65);
+
+    backdrop-filter: blur(12px);
+
+    z-index: 20;
+
+}
+
+
+.brand-name {
+
+    font-size: 34px;
+
+    font-weight: 300;
+
+    letter-spacing: 9px;
+
+    color: #fff;
+
+    text-shadow:
+        0 0 12px var(--blue-glow);
+
+}
+
+
+.brand-subtitle {
+
+    margin-top: 2px;
+
+    color: var(--muted);
+
+    font-size: 8px;
+
+    letter-spacing: 4px;
+
+}
+
+
+.research-badge {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding:
+        9px 18px;
+
+    border:
+        1px solid
+        rgba(59, 130, 246, 0.55);
+
+    background:
+        rgba(59, 130, 246, 0.07);
+
+    color: var(--blue);
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+
+    box-shadow:
+        0 0 20px rgba(59, 130, 246, 0.08);
+
+}
+
+
+.badge-dot {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--blue);
+
+    box-shadow:
+        0 0 10px var(--blue);
+
+    animation:
+        blink 1.2s infinite;
+
+}
+
+
+.system-time {
+
+    text-align: right;
+
+}
+
+
+.system-time span {
+
+    display: block;
+
+    color: var(--blue);
+
+    font-size: 17px;
+
+    font-family:
+        Consolas,
+        monospace;
+
+}
+
+
+.system-time small {
+
+    color: #475569;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+}
+
+
+/* =====================================================
+   PANELS
+===================================================== */
+
+.left-panel,
+.right-panel {
+
+    position: absolute;
+
+    top: 110px;
+
+    width: 255px;
+
+    z-index: 10;
+
+}
+
+
+.left-panel {
+
+    left: 30px;
+
+}
+
+
+.right-panel {
+
+    right: 30px;
+
+}
+
+
+.panel-label {
+
+    margin-bottom: 10px;
+
+    color: var(--muted);
+
+    font-size: 9px;
+
+    letter-spacing: 3px;
+
+}
+
+
+.status-card,
+.power-card,
+.operations-card,
+.activity-card {
+
+    border:
+        1px solid
+        rgba(59, 130, 246, 0.28);
+
+    background:
+        rgba(4, 9, 26, 0.82);
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+        inset 0 0 30px
+        rgba(59, 130, 246, 0.02);
+
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.status-card {
+
+    padding: 18px;
+
+}
+
+
+.status-top {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+}
+
+
+.status-dot {
+
+    width: 10px;
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: #60a5fa;
+
+    box-shadow:
+        0 0 8px #3b82f6,
+        0 0 20px #1d4ed8;
+
+    animation:
+        blink 1.8s infinite;
+
+}
+
+
+.status-top strong {
+
+    display: block;
+
+    color: var(--blue);
+
+    font-size: 13px;
+
+    letter-spacing: 2px;
+
+}
+
+
+.status-top small {
+
+    display: block;
+
+    color: #475569;
+
+    margin-top: 3px;
+
+    font-size: 9px;
+
+}
+
+
+.status-line {
+
+    height: 1px;
+
+    margin: 17px 0;
+
+    background:
+        #0d1f45;
+
+}
+
+
+.system-item {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 8px 0;
+
+    color: #475569;
+
+    font-size: 9px;
+
+    letter-spacing: 1px;
+
+}
+
+
+.system-item strong {
+
+    color: #93b4e8;
+
+}
+
+
+/* =====================================================
+   PROGRESS
+===================================================== */
+
+.power-card {
+
+    margin-top: 15px;
+
+    padding: 18px;
+
+}
+
+
+.power-value {
+
+    margin-top: 5px;
+
+    color: white;
+
+    font-size: 31px;
+
+    font-family: Consolas, monospace;
+
+}
+
+
+.power-value span {
+
+    color: var(--blue);
+
+}
+
+
+.power-bar {
+
+    width: 100%;
+
+    height: 3px;
+
+    margin-top: 10px;
+
+    background:
+        #0d1f45;
+
+}
+
+
+.power-fill {
+
+    height: 100%;
+
+    width: 0%;
+
+    background:
+        linear-gradient(
+            90deg,
+            #0b2a6b,
+            var(--blue)
+        );
+
+    box-shadow:
+        0 0 10px var(--blue);
+
+    transition: width .5s;
+
+}
+
+
+.power-card small {
+
+    display: block;
+
+    margin-top: 8px;
+
+    color: #475569;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+}
+
+
+/* =====================================================
+   CORE AREA
+===================================================== */
+
+.core-area {
+
+    position: absolute;
+
+    top: 85px;
+    bottom: 70px;
+
+    left: 50%;
+
+    width: 700px;
+
+    transform: translateX(-50%);
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+
+#research-globe {
+
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+}
+
+
+.core-ring {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(59, 130, 246, 0.20);
+
+    pointer-events: none;
+
+}
+
+
+.ring-a {
+
+    width: 470px;
+    height: 470px;
+
+    animation:
+        rotate 25s linear infinite;
+
+}
+
+
+.ring-b {
+
+    width: 560px;
+    height: 560px;
+
+    border-style: dashed;
+
+    animation:
+        rotate-reverse 35s linear infinite;
+
+}
+
+
+.ring-c {
+
+    width: 650px;
+    height: 650px;
+
+    border-color:
+        rgba(59, 130, 246, 0.08);
+
+    animation:
+        rotate 50s linear infinite;
+
+}
+
+
+@keyframes rotate {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+@keyframes rotate-reverse {
+
+    from {
+        transform: rotate(360deg);
+    }
+
+    to {
+        transform: rotate(0deg);
+    }
+
+}
+
+
+/* =====================================================
+   RADAR
+===================================================== */
+
+.radar {
+
+    position: absolute;
+
+    width: 490px;
+    height: 490px;
+
+    border-radius: 50%;
+
+    overflow: hidden;
+
+    opacity: .35;
+
+    pointer-events: none;
+
+}
+
+
+.radar-line {
+
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    width: 50%;
+
+    height: 1px;
+
+    transform-origin: left;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--blue),
+            transparent
+        );
+
+    animation:
+        radarSpin 4s linear infinite;
+
+}
+
+
+@keyframes radarSpin {
+
+    from {
+        transform:
+            rotate(0deg);
+    }
+
+    to {
+        transform:
+            rotate(360deg);
+    }
+
+}
+
+
+/* =====================================================
+   CORE STATUS
+===================================================== */
+
+.core-status {
+
+    position: absolute;
+
+    bottom: 25px;
+
+    text-align: center;
+
+}
+
+
+.core-title {
+
+    color: #7c93bd;
+
+    font-size: 9px;
+
+    letter-spacing: 4px;
+
+}
+
+
+.core-state {
+
+    margin-top: 7px;
+
+    color: var(--blue);
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+}
+
+
+.core-state span:first-child {
+
+    display: inline-block;
+
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: var(--blue);
+
+    box-shadow:
+        0 0 8px var(--blue);
+
+    margin-right: 5px;
+
+}
+
+
+/* =====================================================
+   STEPS
+===================================================== */
+
+.operations-card,
+.activity-card {
+
+    padding: 17px;
+
+}
+
+
+.operation-header {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding-bottom: 12px;
+
+    border-bottom:
+        1px solid
+        #10234d;
+
+    color: #8ca3c7;
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+}
+
+
+.task-count {
+
+    color: var(--blue);
+
+}
+
+
+.step-list {
+
+    margin-top: 12px;
+
+}
+
+
+.step {
+
+    padding: 9px 10px;
+
+    margin-bottom: 5px;
+
+    color: #4a5c7d;
+
+    font-size: 9.5px;
+
+    letter-spacing: 1px;
+
+    border:
+        1px solid transparent;
+
+    border-left:
+        2px solid
+        #12274f;
+
+    background:
+        rgba(8, 16, 38, 0.5);
+
+    transition:
+        color .3s,
+        border-color .3s;
+
+}
+
+
+.step.active {
+
+    color: #dbe9ff;
+
+    border-left-color: var(--blue);
+
+    background:
+        rgba(59, 130, 246, 0.10);
+
+    box-shadow:
+        inset 0 0 18px rgba(59, 130, 246, 0.06);
+
+}
+
+
+.step.done {
+
+    color: #6ee7b7;
+
+    border-left-color: #10b981;
+
+}
+
+
+.step.error {
+
+    color: #fca5a5;
+
+    border-left-color: #ef4444;
+
+}
+
+
+/* =====================================================
+   SOURCES
+===================================================== */
+
+.activity-card {
+
+    margin-top: 15px;
+
+}
+
+
+.live-label {
+
+    color: var(--blue);
+
+}
+
+
+.activity-log {
+
+    margin-top: 12px;
+
+    max-height: 150px;
+
+    overflow: hidden;
+
+}
+
+
+.activity-log div {
+
+    padding: 7px 0;
+
+    color: #7c93bd;
+
+    font-size: 8px;
+
+    font-family:
+        Consolas,
+        monospace;
+
+    border-bottom:
+        1px solid
+        rgba(59, 130, 246, .07);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+}
+
+
+.activity-log span {
+
+    color: #3d5178;
+
+    margin-right: 8px;
+
+}
+
+
+/* =====================================================
+   COMMAND BAR
+===================================================== */
+
+.command-area {
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 30px;
+
+    transform:
+        translateX(-50%);
+
+    width:
+        min(700px, 60vw);
+
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+
+    border:
+        1px solid
+        rgba(59, 130, 246, .55);
+
+    background:
+        rgba(3, 7, 20, .92);
+
+    box-shadow:
+        0 0 25px
+        rgba(59, 130, 246, .10);
+
+    z-index: 30;
+
+}
+
+
+.command-prefix {
+
+    width: 48px;
+
+    text-align: center;
+
+    color: var(--blue);
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size: 20px;
+
+}
+
+
+.command-area input {
+
+    flex: 1;
+
+    height: 100%;
+
+    outline: none;
+
+    border: none;
+
+    background: transparent;
+
+    color: white;
+
+    font-family:
+        Consolas,
+        monospace;
+
+    font-size: 12px;
+
+}
+
+
+.command-area input::placeholder {
+
+    color: #3a4f74;
+
+}
+
+
+.mic-button {
+
+    height: 100%;
+
+    padding: 0 14px;
+
+    border: none;
+
+    border-left:
+        1px solid
+        rgba(59, 130, 246, .25);
+
+    background:
+        rgba(59, 130, 246, .05);
+
+    color: #8ca3c7;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+}
+
+
+.mic-button:hover {
+
+    background:
+        rgba(59, 130, 246, .15);
+
+    color: #dbe9ff;
+
+}
+
+
+.mic-button.listening {
+
+    background:
+        var(--blue);
+
+    color: #020617;
+
+    animation:
+        micPulse 1s infinite;
+
+}
+
+
+@keyframes micPulse {
+
+    0%, 100% {
+        box-shadow: 0 0 8px var(--blue);
+    }
+
+    50% {
+        box-shadow: 0 0 22px var(--blue);
+    }
+
+}
+
+
+.command-status {
+
+    padding: 0 15px;
+
+    color: #3a4f74;
+
+    font-size: 8px;
+
+    letter-spacing: 2px;
+
+}
+
+
+.command-button {
+
+    height: 100%;
+
+    padding: 0 20px;
+
+    border: none;
+
+    border-left:
+        1px solid
+        rgba(59, 130, 246, .25);
+
+    background:
+        rgba(59, 130, 246, .06);
+
+    color: var(--blue);
+
+    font-size: 9px;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+}
+
+
+.command-button:hover {
+
+    background:
+        var(--blue);
+
+    color: #020617;
+
+    box-shadow:
+        0 0 20px
+        rgba(59, 130, 246, .5);
+
+}
+
+
+.command-button:disabled {
+
+    opacity: .4;
+
+    cursor: default;
+
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer {
+
+    position: absolute;
+
+    bottom: 8px;
+
+    left: 30px;
+    right: 30px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    color: #263552;
+
+    font-size: 7px;
+
+    letter-spacing: 2px;
+
+}
+
+
+.footer-dot {
+
+    display: inline-block;
+
+    width: 5px;
+    height: 5px;
+
+    margin-right: 5px;
+
+    border-radius: 50%;
+
+    background:
+        var(--blue);
+
+    box-shadow:
+        0 0 5px
+        var(--blue);
+
+}
+
+
+.footer a {
+
+    color: var(--blue);
+
+    text-decoration: none;
+
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: .4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width: 1100px) {
+
+    .left-panel,
+    .right-panel {
+
+        width: 210px;
+
+    }
+
+    .core-area {
+
+        width: 550px;
+
+    }
+
+}
+
+
+@media(max-width: 800px) {
+
+    .left-panel,
+    .right-panel {
+
+        display: none;
+
+    }
+
+    .core-area {
+
+        width: 100%;
+
+    }
+
+    .command-area {
+
+        width: 85vw;
+
+    }
+
+    .header {
+
+        padding: 0 15px;
+
+    }
+
+}

@@ -39,8 +39,10 @@ def listen():
             transcript = recognizer.recognize_google(audio).strip()
             return transcript, None
         except sr.UnknownValueError:
+            state.set_status("idle", "NOVA is ready")
             return "", "I heard you, but couldn't make out the words."
         except sr.RequestError:
+            state.set_status("idle", "NOVA is ready")
             return "", "Speech service unreachable — check your internet."
     except Exception:
         state.set_status("idle", "NOVA is ready")

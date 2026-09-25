@@ -27,6 +27,10 @@ class NovaState:
         self.stats = {"cpu": 0, "ram": 0, "storage": 0, "overall": 0, "battery": None}
         self.voice_enabled = True
         self.beast_mode = False   # Beast Mode: expanded tool access when armed
+        self.research_status = {  # Research Mode: live pipeline progress
+            "running": False, "done": False, "topic": "", "step": "idle",
+            "pct": 0, "detail": "", "sources": [], "pdf_path": None, "error": None,
+        }
 
     # ------------------------------------------------------------ status ----
     def set_status(self, status, detail=""):
@@ -114,6 +118,16 @@ class NovaState:
     def voice_on(self):
         with self._lock:
             return self.voice_enabled
+
+    # ---------------------------------------------------- research mode ----
+    def set_research(self, **kwargs):
+        """Update any subset of the research status; thread-safe."""
+        with self._lock:
+            self.research_status.update(kwargs)
+
+    def research(self):
+        with self._lock:
+            return dict(self.research_status)
 
     # -------------------------------------------------------- beast mode ----
     def set_beast_mode(self, enabled):

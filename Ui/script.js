@@ -198,6 +198,12 @@ async function sendMessage() {
             return;
         }
 
+        /* "enter research mode" IS the research transition trigger */
+        if (data.intent === "RESEARCH_MODE_ON") {
+            enterResearchMode();
+            return;
+        }
+
     } catch (error) {
         addMsg("nova", "The backend is unreachable, sir.");
     }
@@ -226,6 +232,114 @@ input.addEventListener(
 
 
 /* =========================================
+   VOICE INPUT — mic button -> /api/listen
+   One click = one spoken command. NOVA listens,
+   transcribes, executes and replies (the reply is
+   spoken aloud by the backend when voice is on).
+========================================= */
+
+const micButton = document.getElementById("mic-button");
+const voiceToggle = document.getElementById("voice-toggle");
+
+let listening = false;
+
+async function listenOnce() {
+
+    if (listening) {
+        return;   // one mic at a time
+    }
+    listening = true;
+
+    micButton.classList.add("listening");
+    setTask("Listening", "Speak now, sir...");
+    setStatus("LISTENING", "Microphone open");
+
+    try {
+
+        const data = await (
+            await fetch("/api/listen", { method: "POST" })
+        ).json();
+
+        if (data.transcript) {
+            addMsg("user", data.transcript);
+        }
+
+        /* NOVA's reply (or the error explanation) — also spoken by the backend */
+        addMsg("nova", data.reply || "...");
+
+        if (window.NovaGlobe) {
+            NovaGlobe.setPhrase(data.transcript || data.reply || "");
+            NovaGlobe.pulse();
+        }
+
+        /* voice command can trigger the Beast transition too */
+        if (data.intent === "BEAST_ON") {
+            enterBeastMode();
+            return;   // setIdle skipped — the transition owns the screen now
+        }
+
+        /* ...or the Research transition */
+        if (data.intent === "RESEARCH_MODE_ON") {
+            enterResearchMode();
+            return;
+        }
+
+    } catch (error) {
+        addMsg("nova", "The backend is unreachable, sir.");
+    }
+
+    micButton.classList.remove("listening");
+    setIdle();
+    listening = false;
+
+}
+
+micButton.addEventListener("click", listenOnce);
+
+
+/* voice output toggle — mutes/unmutes NOVA's speaker via /api/voice */
+
+voiceToggle.addEventListener("click", async () => {
+
+    const enable = voiceToggle.classList.contains("muted");
+
+    try {
+        const r = await (
+            await fetch("/api/voice", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ enabled: enable }),
+            })
+        ).json();
+
+        setVoiceUI(r.voice);
+
+    } catch (error) {
+        /* backend offline — flip optimistically */
+        setVoiceUI(enable);
+    }
+
+});
+
+function setVoiceUI(on) {
+    voiceToggle.textContent = on ? "🔊" : "🔇";
+    voiceToggle.classList.toggle("muted", !on);
+}
+
+/* reflect the backend's actual voice state on load and while polling */
+async function syncVoiceUI() {
+    try {
+        const s = await (await fetch("/api/state")).json();
+        setVoiceUI(!!s.voice);
+    } catch (error) {
+        /* offline — keep whatever the button shows */
+    }
+}
+
+syncVoiceUI();
+
+
+/* =========================================
    LIVE STATE POLLING
 ========================================= */
 
@@ -251,6 +365,9 @@ async function poll() {
         } else {
             setTask(label, s.detail || "Working...");
         }
+
+        /* keep the speaker toggle honest with the backend's voice state */
+        setVoiceUI(!!s.voice);
 
         const d = await (
             await fetch("/api/announcements?since=" + lastAnnouncementId)
@@ -375,6 +492,80 @@ function enterBeastMode() {
 
     setTimeout(() => {
         location.href = "/beast";
+    }, 950);
+
+}
+
+
+/* =========================================
+   RESEARCH MODE TRANSITION
+   Gold UI powers down -> blue shockwave -> /research
+   Triggered by COMMAND ONLY: "enter research mode"
+========================================= */
+
+/* rising chime: entering Research Mode */
+function playResearchSound() {
+    try {
+        const ctx = audioCtx();
+        const now = ctx.currentTime;
+
+        /* clean rising two-tone chime (curious, not aggressive) */
+        const chime = ctx.createOscillator();
+        const chimeGain = ctx.createGain();
+        chime.type = "sine";
+        chime.frequency.setValueAtTime(392, now);          /* G4 */
+        chime.frequency.setValueAtTime(587, now + 0.28);   /* D5 */
+        chimeGain.gain.setValueAtTime(0.0001, now);
+        chimeGain.gain.exponentialRampToValueAtTime(0.16, now + 0.06);
+        chimeGain.gain.setValueAtTime(0.16, now + 0.26);
+        chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.7);
+        chime.connect(chimeGain).connect(ctx.destination);
+        chime.start(now);
+        chime.stop(now + 0.75);
+
+        /* shimmer layer: soft fifth above, delayed */
+        const shimmer = ctx.createOscillator();
+        const shimmerGain = ctx.createGain();
+        shimmer.type = "triangle";
+        shimmer.frequency.setValueAtTime(880, now + 0.3);
+        shimmerGain.gain.setValueAtTime(0.0001, now + 0.3);
+        shimmerGain.gain.exponentialRampToValueAtTime(0.07, now + 0.38);
+        shimmerGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.8);
+        shimmer.connect(shimmerGain).connect(ctx.destination);
+        shimmer.start(now + 0.3);
+        shimmer.stop(now + 0.85);
+    } catch (error) {
+        /* audio blocked/unavailable — transition stays silent */
+    }
+}
+
+function enterResearchMode() {
+
+    if (document.body.classList.contains("to-research")) {
+        return;
+    }
+    document.body.classList.add("to-research");
+
+    playResearchSound();
+
+    const overlay = document.createElement("div");
+    overlay.className = "research-transition";
+    overlay.innerHTML = `
+        <div class="blue-veil"></div>
+        <div class="shockwave"></div>
+        <div class="shockwave w2"></div>
+        <div class="shockwave w3"></div>
+        <div class="launch-text">RESEARCH MODE</div>
+    `;
+    document.body.appendChild(overlay);
+
+    void overlay.offsetWidth;
+    overlay.classList.add("active");
+
+    setStatus("RESEARCH MODE", "Opening research systems...");
+
+    setTimeout(() => {
+        location.href = "/research";
     }, 950);
 
 }

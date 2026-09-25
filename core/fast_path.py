@@ -442,6 +442,25 @@ class FastPath:
             ),
             "SEARCH_WEB",
         ),
+        # --- research mode toggle (a UI state, like beast mode) ---
+        # Placed ABOVE the RESEARCH rule so "research mode" is never
+        # mistaken for a topic. Exact keyword, no neural net needed.
+        (
+            re.compile(
+                _POLITE + r"(?:enter|start|activate|open|go\s+to)\s+(?:the\s+)?"
+                r"research(\s*mode)?\b|" + _POLITE + r"research\s+mode\b",
+                re.I,
+            ),
+            "RESEARCH_MODE_ON",
+        ),
+        (
+            re.compile(
+                _POLITE + r"(?:exit|leave|stop|end|close)\s+(?:the\s+)?"
+                r"research(\s*mode)?\b",
+                re.I,
+            ),
+            "RESEARCH_OFF",
+        ),
         # --- research + document ---
         (
             re.compile(
@@ -451,6 +470,11 @@ class FastPath:
                 r"|\bresearch\s+(?P<topic2>.+?)\s+(?:and\s+)?(?:make|write|prepare|create)\s+(?:a|an)\s+doc(?:ument)?\b\s*[.?!]?\s*$",
                 re.I,
             ),
+            "RESEARCH",
+        ),
+        # bare "research <topic>" — kick off a full research + PDF
+        (
+            re.compile(r"^research\s+(?P<topic3>.+?)\s*[.?!]?\s*$", re.I),
             "RESEARCH",
         ),
         # --- private/incognito website ---
